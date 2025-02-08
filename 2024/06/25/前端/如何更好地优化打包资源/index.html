@@ -1,0 +1,177 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>前端/如何更好地优化打包资源 | 小黑的小站</title><meta name="description" content="此文转载自山月博客https:&#x2F;&#x2F;shanyue.tech&#x2F;frontend-engineering&#x2F;bundle.html 前端高级进阶：如何更好地优化打包资源在前端中但凡谈到打包，肯定要提及到 webpack，毕竟它现在已经是最为流行的打包工具。但 webpack 更多地是表现在 术 上，于是我决定写这篇文章，更多地讲解一些关于 道 的。 对于一个前端而言，生产环境的静态资源优化，它既是面试中"><meta name="author" content="小黑"><meta name="copyright" content="小黑"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/img/favicon.ico"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://fonts.googleapis.com" crossorigin="crossorigin"/><link rel="dns-prefetch" href="https://fonts.googleapis.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="dns-prefetch" href="//busuanzi.ibruce.info"/><meta name="twitter:card" content="summary"><meta name="twitter:title" content="前端/如何更好地优化打包资源"><meta name="twitter:description" content="此文转载自山月博客https:&#x2F;&#x2F;shanyue.tech&#x2F;frontend-engineering&#x2F;bundle.html 前端高级进阶：如何更好地优化打包资源在前端中但凡谈到打包，肯定要提及到 webpack，毕竟它现在已经是最为流行的打包工具。但 webpack 更多地是表现在 术 上，于是我决定写这篇文章，更多地讲解一些关于 道 的。 对于一个前端而言，生产环境的静态资源优化，它既是面试中"><meta name="twitter:image" content="http://yoursite.com/img/javascript.jpg"><meta property="og:type" content="article"><meta property="og:title" content="前端/如何更好地优化打包资源"><meta property="og:url" content="http://yoursite.com/2024/06/25/%E5%89%8D%E7%AB%AF/%E5%A6%82%E4%BD%95%E6%9B%B4%E5%A5%BD%E5%9C%B0%E4%BC%98%E5%8C%96%E6%89%93%E5%8C%85%E8%B5%84%E6%BA%90/"><meta property="og:site_name" content="小黑的小站"><meta property="og:description" content="此文转载自山月博客https:&#x2F;&#x2F;shanyue.tech&#x2F;frontend-engineering&#x2F;bundle.html 前端高级进阶：如何更好地优化打包资源在前端中但凡谈到打包，肯定要提及到 webpack，毕竟它现在已经是最为流行的打包工具。但 webpack 更多地是表现在 术 上，于是我决定写这篇文章，更多地讲解一些关于 道 的。 对于一个前端而言，生产环境的静态资源优化，它既是面试中"><meta property="og:image" content="http://yoursite.com/img/javascript.jpg"><meta property="article:published_time" content="2024-06-25T06:53:43.416Z"><meta property="article:modified_time" content="2024-06-25T06:55:02.463Z"><script src="https://cdn.jsdelivr.net/npm/js-cookie/dist/js.cookie.min.js"></script><script>var autoChangeMode = '1'
+var t = Cookies.get("theme")
+if (autoChangeMode == '1'){
+  var isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
+  var isLightMode = window.matchMedia("(prefers-color-scheme: light)").matches
+  var isNotSpecified = window.matchMedia("(prefers-color-scheme: no-preference)").matches
+  var hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+  if (t === undefined){
+    if (isLightMode) activateLightMode()
+    else if (isDarkMode) activateDarkMode()
+    else if (isNotSpecified || hasNoSupport){
+      console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+      var now = new Date()
+      var hour = now.getHours()
+      var isNight = hour < 6 || hour >= 18
+      isNight ? activateDarkMode() : activateLightMode()
+  }
+  } else if (t == 'light') activateLightMode()
+  else activateDarkMode()
+
+} else if (autoChangeMode == '2'){
+  now = new Date();
+  hour = now.getHours();
+  isNight = hour < 6 || hour >= 18
+  if(t === undefined) isNight? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode() 
+} else {
+  if ( t == 'dark' ) activateDarkMode()
+  else if ( t == 'light') activateLightMode()
+}
+
+function activateDarkMode(){
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+    document.querySelector('meta[name="theme-color"]').setAttribute('content','#000')
+  }
+}
+function activateLightMode(){
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+  document.querySelector('meta[name="theme-color"]').setAttribute('content','#fff')
+  }
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css"><link rel="canonical" href="http://yoursite.com/2024/06/25/%E5%89%8D%E7%AB%AF/%E5%A6%82%E4%BD%95%E6%9B%B4%E5%A5%BD%E5%9C%B0%E4%BC%98%E5%8C%96%E6%89%93%E5%8C%85%E8%B5%84%E6%BA%90/"><link rel="prev" title="前端/网站的缓存控制策略最佳实践及注意事项" href="http://yoursite.com/2024/06/25/%E5%89%8D%E7%AB%AF/%E7%BD%91%E7%AB%99%E7%9A%84%E7%BC%93%E5%AD%98%E6%8E%A7%E5%88%B6%E7%AD%96%E7%95%A5%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%E5%8F%8A%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/"><link rel="next" title="杂项/mac工具推荐" href="http://yoursite.com/2024/02/08/%E6%9D%82%E9%A1%B9/mac%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90/"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"cookieDomain":"http://ynxh.xyz","msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  bookmark: {
+    message_prev: '按',
+    message_next: '键将本页加入书签'
+  },
+  runtime_unit: '天',
+  runtime: true,
+  copyright: undefined,
+  ClickShowText: undefined,
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: {"bookmark":{"message_prev":"按","message_next":"键将本页加入书签"},"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#2d3035","position":"bottom-left"},
+  baiduPush: false,
+  highlightCopy: true,
+  highlightLang: true,
+  highlightShrink: 'false',
+  isFontAwesomeV5: false,
+  isPhotoFigcaption: false
+  
+}</script><script>var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isSidebar: true  
+  }</script><noscript><style>
+#page-header {
+  opacity: 1
+}
+.justified-gallery img{
+  opacity: 1
+}
+</style></noscript><meta name="generator" content="Hexo 4.2.1"></head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">132</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page"><i class="fa-fw fa fa-heartbeat" aria-hidden="true"></i><span> 清单</span><i class="fa fa-chevron-down menus-expand" aria-hidden="true"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page" href="/Gallery/"><i class="fa-fw fa fa-picture-o"></i><span> 照片</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fa fa-film"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> 关于</span></a></div></div></div></div><i class="fa fa-arrow-right on" id="toggle-sidebar" aria-hidden="true">     </i><div id="sidebar"><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#前端高级进阶：如何更好地优化打包资源"><span class="toc-number">1.</span> <span class="toc-text">前端高级进阶：如何更好地优化打包资源</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#原则"><span class="toc-number">1.1.</span> <span class="toc-text">原则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#01-减小打包的整体体积"><span class="toc-number">1.2.</span> <span class="toc-text">01 减小打包的整体体积</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#代码压缩"><span class="toc-number">1.2.1.</span> <span class="toc-text">代码压缩</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#移除不必要的模块"><span class="toc-number">1.2.2.</span> <span class="toc-text">移除不必要的模块</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#选择可替代的体积较小的模块"><span class="toc-number">1.2.3.</span> <span class="toc-text">选择可替代的体积较小的模块</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#按需引入模块"><span class="toc-number">1.2.4.</span> <span class="toc-text">按需引入模块</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#02-Code-Splitting-按需加载，优化页面首次加载体积"><span class="toc-number">1.3.</span> <span class="toc-text">02 Code Splitting: 按需加载，优化页面首次加载体积</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#03-Bundle-Splitting"><span class="toc-number">1.4.</span> <span class="toc-text">03 Bundle Splitting</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#小结"><span class="toc-number">1.5.</span> <span class="toc-text">小结</span></a></li></ol></li></ol></div></div></div><div id="body-wrap"><div class="post-bg" id="nav" style="background-image: url(/img/javascript.jpg)"><div id="page-header"><span class="pull_left" id="blog_name"><a class="blog_title" id="site-name" href="/">小黑的小站</a></span><span class="pull_right menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page"><i class="fa-fw fa fa-heartbeat" aria-hidden="true"></i><span> 清单</span><i class="fa fa-chevron-down menus-expand" aria-hidden="true"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page" href="/Gallery/"><i class="fa-fw fa fa-picture-o"></i><span> 照片</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fa fa-film"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> 关于</span></a></div></div><span class="toggle-menu close"><a class="site-page"><i class="fa fa-bars fa-fw" aria-hidden="true"></i></a></span></span></div><div id="post-info"><div id="post-title"><div class="posttitle">前端/如何更好地优化打包资源</div></div><div id="post-meta"><div class="meta-firstline"><time class="post-meta__date"><span class="post-meta__date-created" title="发表于 2024-06-25 14:53:43"><i class="fa fa-calendar" aria-hidden="true"></i> 发表于 2024-06-25</span><span class="post-meta__separator">|</span><span class="post-meta__date-updated" title="更新于 2024-06-25 14:55:02"><i class="fa fa-history" aria-hidden="true"></i> 更新于 2024-06-25</span></time></div><div class="meta-secondline"> <span class="post-meta-wordcount"><i class="post-meta__icon fa fa-file-word-o" aria-hidden="true"></i><span>字数总计:</span><span class="word-count">2.4k</span><span class="post-meta__separator">|</span><i class="post-meta__icon fa fa-clock-o" aria-hidden="true"></i><span>阅读时长: 7 分钟</span></span></div><div class="meta-thirdline"><span class="post-meta-pv-cv"><span class="post-meta__separator">|</span><i class="fa fa-eye post-meta__icon" aria-hidden="true"> </i><span>阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-commentcount"></span></div></div></div></div><main class="layout_post" id="content-inner"><article id="post"><div id="article-container"><p>此文转载自山月博客<a href="https://shanyue.tech/frontend-engineering/bundle.html" target="_blank" rel="noopener">https://shanyue.tech/frontend-engineering/bundle.html</a></p>
+<h1 id="前端高级进阶：如何更好地优化打包资源"><a href="#前端高级进阶：如何更好地优化打包资源" class="headerlink" title="前端高级进阶：如何更好地优化打包资源"></a>前端高级进阶：如何更好地优化打包资源</h1><p>在前端中但凡谈到打包，肯定要提及到 <code>webpack</code>，毕竟它现在已经是最为流行的打包工具。但 <code>webpack</code> 更多地是表现在 <code>术</code> 上，于是我决定写这篇文章，更多地讲解一些关于 <code>道</code> 的。</p>
+<p>对于一个前端而言，生产环境的静态资源优化，它既是面试中的高频问题，同时也最容易成为平时工作中的 OKR/KPI。如果你经常致力于优化前端打包提及，必然会对一些数字极为敏感，比如：</p>
+<ol>
+<li><code>lodash</code> 和 <code>react</code> gzip 后的体积是多少 (定性，可以给出范围)</li>
+<li>打包 <code>moment</code> 时会有什么问题</li>
+<li>你们线上前端项目首屏静态资源 gzip 后的体积是多少</li>
+</ol>
+<p>如果你负责了你们前端项目的打包优化，如果以上问题连一个都不了解那么是说不通的。以我作为面试官的两年经验中，如果候选人对这些问题有所了解的话，往往对打包以及 webpack 的了解就会相对深入一些</p>
+<h2 id="原则"><a href="#原则" class="headerlink" title="原则"></a>原则</h2><p>一般谈到打包会有两方面的意思，第一在于提高打包的速度，第二在于对打包后的静态资源的优化。<strong>而对于静态资源的优化又不仅仅是打包提及的缩减。</strong></p>
+<p>对于打包资源优化的总体原则，在于尽可能的减少或者延迟模块的引用。主要遵循以下三点</p>
+<ol>
+<li>减小打包的整体体积</li>
+<li><code>Code Splitting</code>: 按需加载，优化页面首次加载体积。如根据路由按需加载，根据是否可见按需加载</li>
+<li><code>Bundle Splitting</code>：分包，根据模块更改频率分层次打包，充分利用缓存</li>
+</ol>
+<p>接下来本篇文章将会结合实例分别阐述这三点</p>
+<h2 id="01-减小打包的整体体积"><a href="#01-减小打包的整体体积" class="headerlink" title="01 减小打包的整体体积"></a>01 减小打包的整体体积</h2><p><img src="/" class="lazyload" data-src="https://cloud.githubusercontent.com/assets/302213/20628702/93f72404-b338-11e6-92d4-9a365550a701.gif"  alt></p>
+<p>第一种方法是减小打包的整体体积。减小打包的总体积有多种方式，这往往也是打包资源优化的着力点，一方面操作性高易于实践，<del>另一方面有具体数据支撑易于写 PPT 来晋升</del>。我从网站性能优化的实践角度，来分为以下几个方面</p>
+<h3 id="代码压缩"><a href="#代码压缩" class="headerlink" title="代码压缩"></a>代码压缩</h3><p>代码压缩可以非常可观地减小资源打包体积，但是它的可操作性空间过小。可操作性低的意思是这一项不太容易出现在晋级评审的 PPT 上，如同 CDN 在网站性能优化的重要程度一样，重要但不归你做(或者傻瓜式配置)。</p>
+<p>它良好的模块化，以致于 <code>webpack</code> 就自作主张在生产环境中默认把这件事给做了。</p>
+<p>那它是如何压缩代码的？最典型的两种方法就是空白符替换以及缩短变量名，如代码所示，仅仅通过这两种方式就大大压缩了 javascript 资源：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 压缩前</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sum</span>(<span class="params">first, second</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> first + second;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 压缩后</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">s</span>(<span class="params">x, y</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>关于代码压缩，可以参考山月的<a href="https://github.com/shfshanyue/blog/tree/master/frontend-engineering" target="_blank" rel="noopener">前端高级进阶系列</a>之<a href="https://github.com/shfshanyue/blog/blob/master/frontend-engineering/uglify.md" target="_blank" rel="noopener">javascript 代码的体积是如何被压缩的</a></p>
+<h3 id="移除不必要的模块"><a href="#移除不必要的模块" class="headerlink" title="移除不必要的模块"></a>移除不必要的模块</h3><p>这句话好像是废话，但它却是真正有用并且极为容易实现的一点。</p>
+<p>在以下代码中，对 <code>lodash</code> 这个模块进行了引入，但在之后的代码中并无使用 <code>lodash</code>，那在 webpack 中这个模块还会继续打包吗？</p>
+<p>很遗憾，仍会对它进行打包。但好消息是这一点优化起来相当简单。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 仅仅引入而未在代码中使用，该模块仍然会被打包</span></span><br><span class="line"><span class="keyword">import</span> _ <span class="keyword">from</span> <span class="string">"lodash"</span>;</span><br></pre></td></tr></table></figure>
+
+<p>对于这类问题总应该防患于未然，扼杀于摇篮中。<code>eslint</code> 的用武之地来了，它除了统一团队的代码风格以外，也用来提高团队的代码质量以及性能。</p>
+<h3 id="选择可替代的体积较小的模块"><a href="#选择可替代的体积较小的模块" class="headerlink" title="选择可替代的体积较小的模块"></a>选择可替代的体积较小的模块</h3><p>针对这一条，有一个典型的例子是以体积过大而臭名昭著的 <code>moment.js</code> 模块，它仅仅用于 <code>DateTime</code> 的格式化及各种计算。但你 <code>import</code> 之后它的体积竟然达到了 200kb+，gzip 后仍然有 69kb。以至于在 github 上有一个仓库专门用来介绍如何优化它，</p>
+<ul>
+<li><a href="https://github.com/jmblog/how-to-optimize-momentjs-with-webpack" target="_blank" rel="noopener">How to optimize moment.js with webpack</a></li>
+</ul>
+<p>再来一张图感受一下它巨大的体积吧：</p>
+<p><img src="/" class="lazyload" data-src="https://raw.githubusercontent.com/jmblog/how-to-optimize-momentjs-with-webpack/master/source-map-explorer.png"  alt></p>
+<p>此时可以选择一个可替代它功能，但体积更小的模块。与 <code>moment.js</code> API 兼容的 <code>day.js</code>，它 gzip 后体积仅仅只有 2kb。</p>
+<h3 id="按需引入模块"><a href="#按需引入模块" class="headerlink" title="按需引入模块"></a>按需引入模块</h3><p>当你面对一个巨无霸的，捆绑式的大型模块时，可能你并不会使用到它的所有的功能，你只需要按照你的需求引入模块就可以了。那经常会有哪些巨无霸模块呢？</p>
+<p>如 <code>lodash</code> (勉强算)，<code>antd</code>，<code>echarts</code>，我相信这三个模块对于以 React 为主的前端工程师都或多或少使用过。对你所需要使用的模块单独引入：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> DatePicker <span class="keyword">from</span> <span class="string">"antd/es/date-picker"</span>; <span class="comment">// for js</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">"antd/es/date-picker/style/css"</span>; <span class="comment">// for css</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="keyword">get</span> from "lodash.<span class="keyword">get</span>";</span><br></pre></td></tr></table></figure>
+
+<h2 id="02-Code-Splitting-按需加载，优化页面首次加载体积"><a href="#02-Code-Splitting-按需加载，优化页面首次加载体积" class="headerlink" title="02 Code Splitting: 按需加载，优化页面首次加载体积"></a>02 Code Splitting: 按需加载，优化页面首次加载体积</h2><p>懒加载，如果面试中提到懒加载的话，大概率面试官此时是想问你关于图片懒加载的问题。</p>
+<blockquote>
+<p><a href="https://q.shanyue.tech/fe/html/1.html" target="_blank" rel="noopener">前端开发中的图片懒加载如何实现</a></p>
+</blockquote>
+<p>通过 <code>Code Splitting</code> 可以只加载当前所需要的核心资源：</p>
+<ol>
+<li>如果你处在首页，并且首页中有占用资源过重的图表，需要对图表懒加载，否则它会大幅拖垮应用的首次渲染，加大白屏时间</li>
+<li>如果你处在首页，你无需加载当前不可见屏幕下方的复杂组件</li>
+<li>如果你处在页面 A，你没有必要加载页面 B 的资源</li>
+</ol>
+<p>他们实现起来均需要额外编写代码，所以可操作性中等，但是好在它能够带来极大的益处，投资回报率较高，操作起来也极为简单，接下来就属于体力活了：</p>
+<ul>
+<li>使用 <code>import()</code> 动态加载模块</li>
+<li>使用 <code>React.lazy()</code> 动态加载组件</li>
+<li>使用 <code>lodable-component</code> 动态加载路由，组件或者模块</li>
+</ul>
+<p>大部分情况下，你只要做一个莫得感情的 API 工程师调用以上三个 API 就可以解决问题，大幅度降低页面的首次加载体积。但是在前往高级前端工程师的路上，你有可能需要了解其中的原理，<del>(有可能并不需要，数据比原理重要)</del> 来做更加精细化的控制，比如针对缓存。</p>
+<blockquote>
+<p><a href="https://q.shanyue.tech/fe/webpack/206.html" target="_blank" rel="noopener">Code Splitting 的原理是什么？</a></p>
+</blockquote>
+<h2 id="03-Bundle-Splitting"><a href="#03-Bundle-Splitting" class="headerlink" title="03 Bundle Splitting"></a>03 Bundle Splitting</h2><p>除了资源体积上的优化，另一个大的优化就是缓存。单页应用有一个最好的方面，就是所有资源都是带有指纹信息的，这意味着所有的资源都是能够设置永久缓存的。</p>
+<p>但仅仅如此了吗？</p>
+<p>如果你所有的 js 资源都打包成一个文件，它确实有永久缓存的优势。但是当有一行文件进行修改时，这一个大包的指纹信息发生改变，永久缓存失效。</p>
+<p>所以我们现在需要做到的是：当修改文件后，造成最小范围的缓存失效，这样便能够更充分的利用缓存，减小宽带，减小服务器费用。一个好消息是 <code>webpack</code> 等打包工具虽然在 <code>optimization</code> 上内置了很多性能优化，但它不会帮你做这件事，它并不知道你有哪些模块，以及这些模块的重要紧急程度，你终于可以大展拳脚了。</p>
+<p>此时我们可以对资源进行分层次缓存的打包方案，这是一个建议方案</p>
+<ol>
+<li><code>webpack-runtime</code>: 应用中的 <code>webpack</code> 的版本比较稳定，分离出来，保证长久的永久缓存</li>
+<li><code>react-runtime</code>: <code>react</code> 的版本更新频次也较低</li>
+<li><code>vendor</code>: 常用的第三方模块打包在一起，如 <code>lodash</code>，<code>classnames</code> 基本上每个页面都会引用到，但是它们的更新频率会更高一些</li>
+</ol>
+<p>随着 <code>http2</code> 的发展，特别是多路复用，初始页面的静态资源不受资源数量的影响。因此为了更好的缓存效果以及按需加载，也有很多方案建议把所有的第三方模块进行单模块打包。</p>
+<p>在 webpack 中，使用 <code>splitChunks.cacheGroups</code></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  splitChunks: &#123;</span><br><span class="line">    cacheGroups: &#123;</span><br><span class="line">      react: &#123;</span><br><span class="line">        test: <span class="regexp">/[\\/]node_modules[\\/](react|react-dom)[\\/]/</span>,</span><br><span class="line">        name: <span class="string">'react'</span>,</span><br><span class="line">        chunks: <span class="string">'all'</span></span><br><span class="line">      &#125;,</span><br><span class="line">      vendor: &#123;</span><br><span class="line"></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  runtimeChunk: &#123;</span><br><span class="line">    name: <span class="function"><span class="params">entrypoint</span> =&gt;</span> <span class="string">`runtime-<span class="subst">$&#123;entrypoint.name&#125;</span>`</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>毫无疑问在前端中更好地优化打包资源属于网站性能优化强操作性部分的重中之重，整理下本篇文章关于资源优化的所有内容</p>
+<ol>
+<li>减小打包的整体体积<ul>
+<li>代码压缩</li>
+<li>移除不必要的模块</li>
+<li>按需引入模块</li>
+<li>选择可以替代的体积较小的模块</li>
+</ul>
+</li>
+<li><code>Code Splitting</code>: 按需加载，优化页面首次加载体积。如根据路由按需加载，根据是否可见按需加载<ol>
+<li>使用 <code>import()</code> 动态加载模块</li>
+<li>使用 <code>React.lazy()</code> 动态加载组件</li>
+<li>使用 <code>lodable-component</code> 动态加载路由，组件或者模块</li>
+</ol>
+</li>
+<li><code>Bundle Splitting</code>：分包，根据模块更改频率分层次打包，充分利用缓存</li>
+</ol>
+</div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">小黑</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://yoursite.com/2024/06/25/%E5%89%8D%E7%AB%AF/%E5%A6%82%E4%BD%95%E6%9B%B4%E5%A5%BD%E5%9C%B0%E4%BC%98%E5%8C%96%E6%89%93%E5%8C%85%E8%B5%84%E6%BA%90/">http://yoursite.com/2024/06/25/前端/如何更好地优化打包资源/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://yoursite.com" target="_blank">小黑的小站</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/img/javascript.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"/><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js"></script></div></div><div class="post-reward"><a class="reward-button button--primary button--animated"> <i class="fa fa-qrcode"></i> 打赏<div class="reward-main"><ul class="reward-all"><li class="reward-item"><img class="lazyload post-qr-code__img" src="/img/wechat.jpg" alt="微信"/><div class="post-qr-code__desc">微信</div></li><li class="reward-item"><img class="lazyload post-qr-code__img" src="/img/alipay.jpg" alt="支付寶"/><div class="post-qr-code__desc">支付寶</div></li></ul></div></a></div><nav class="pagination_post" id="pagination"><div class="prev-post pull_left"><a href="/2024/06/25/%E5%89%8D%E7%AB%AF/%E7%BD%91%E7%AB%99%E7%9A%84%E7%BC%93%E5%AD%98%E6%8E%A7%E5%88%B6%E7%AD%96%E7%95%A5%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%E5%8F%8A%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/"><img class="prev_cover lazyload" data-src="/img/javascript.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">前端/网站的缓存控制策略最佳实践及注意事项</div></div></a></div><div class="next-post pull_right"><a href="/2024/02/08/%E6%9D%82%E9%A1%B9/mac%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90/"><img class="next_cover lazyload" data-src="/img/nest.png" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">杂项/mac工具推荐</div></div></a></div></nav></article></main><footer id="footer" data-type="color"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2025 By 小黑</div><div class="footer_custom_text">Hi, welcome to my <a href="http://ynxh.xyz/" target="_blank" rel="noopener">blog</a>!</div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><i class="fa fa-book" id="readmode" title="阅读模式"></i><i class="fa fa-plus" id="font_plus" title="放大字体"></i><i class="fa fa-minus" id="font_minus" title="缩小字体"></i><a class="translate_chn_to_cht" id="translateLink" href="javascript:translatePage();" title="简繁转换" target="_self">2</a><i class="darkmode fa fa-moon-o" id="darkmode" title="夜间模式"></i></div><div id="rightside-config-show"><div id="rightside_config" title="设置"><i class="fa fa-cog" aria-hidden="true"></i></div><i class="fa fa-list-ul close" id="mobile-toc-button" title="目录" aria-hidden="true"></i><i class="fa fa-arrow-up" id="go-up" title="回到顶部" aria-hidden="true"></i></div></section><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script id="canvas_nest" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="/js/third-party/canvas-nest.js"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page@latest/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/lazysizes@latest/lazysizes.min.js" async=""></script><script src="/js/third-party/click_heart.js"></script></body></html>
